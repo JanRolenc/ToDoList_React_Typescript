@@ -4,37 +4,43 @@ import { ITask } from './Interfaces' //todoList je pole objektu a potrebuji teda
 import TodoTask from './Components/TodoTask'
 
 const App: FC = () => {
-  const [task, setTask] = useState<string>('')
+  const [taskName, setTaskName] = useState<string>('')
   const [deadline, setDeadline] = useState<number>(0)
   const [todoList, setTodoList] = useState<ITask[]>([])
 
   const handleInputsChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    //jedna fce pro oba inputy pomoci if; void potvrzuje, fce nebude nic vracet
+    //jedna fce pro oba inputy pomoci if; void potvrzuje, ze fce nebude nic vracet
     if (event.target.name === 'task') {
-      setTask(event.target.value)
+      setTaskName(event.target.value)
     } else {
       setDeadline(Number(event.target.value)) //value musim naparsovat
     }
   }
 
   const addTask = (): void => {
-    const newTask = { taskName: task, deadline: deadline }
+    const newTask = { taskName: taskName, deadline: deadline }
     setTodoList([...todoList, newTask])
     // console.log(todoList)
-    setTask('') //VYMAZE obsah inputu po odkliku; !musim ale u inputu pridat value={task}
+    setTaskName('') //VYMAZE obsah inputu po odkliku; !musim ale u inputu pridat value={task}
     setDeadline(0)
   }
 
-  const removeTask = (): void => {}
+  const removeTask = (taskNameToDelete: string): void => {
+    setTodoList(
+      todoList.filter((task) => {
+        return task.taskName != taskNameToDelete
+      }),
+    )
+  }
 
   return (
     <div className="App">
-      <div className="header-container">
-        <div className="container">
-          <div className="inputs">
+      <div className="header">
+        <div className="header-elements-container">
+          <div className="inputs-container">
             <input
               name="task"
-              value={task} //!nutne pro funkcnost vymazani inputu po kliku na tlacitko
+              value={taskName} //!nutne pro funkcnost vymazani inputu po kliku na tlacitko
               type="text"
               placeholder="Tasks..."
               onChange={handleInputsChange}
@@ -50,16 +56,12 @@ const App: FC = () => {
           <button onClick={addTask}>Add Task</button>
         </div>
       </div>
-      <div className="tasks-container">
-        <div className="tasks-subcontainer">
-          {todoList.length ? (
-            todoList.map((task: ITask, key: number) => (
-              <TodoTask key={key} task={task} />
+      <div className="tasksList-container">
+        {todoList.length
+          ? todoList.map((task: ITask, key: number) => (
+              <TodoTask key={key} task={task} removeTask={removeTask} />
             ))
-          ) : (
-            <span></span>
-          )}
-        </div>
+          : null}
       </div>
     </div>
   )
