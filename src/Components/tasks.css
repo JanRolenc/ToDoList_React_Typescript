@@ -28,10 +28,16 @@
 .task-container button {
     flex: 20%;
     height: 100%;
-    border: none;
+    /* border: none; */
+    border: 1px solid white;
     background-color: lightseagreen;
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     color: white;
     cursor: pointer;
+}
+
+.task-container button:hover {
+    color: red;
+    font-weight: bold;
 }
